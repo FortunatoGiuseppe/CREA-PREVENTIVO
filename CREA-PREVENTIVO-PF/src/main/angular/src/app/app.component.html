@@ -1,0 +1,6 @@
+<button (click)="generatePDF()">Genera PDF</button>
+<button (click)="downloadPDF()" [disabled]="!generatedPDF">Scarica PDF</button>
+<input type="text" [(ngModel)]="inputData.nomeStanza" placeholder="Inserisci il nome della stanza">
+<input type="text" [(ngModel)]="inputData.nomeVoce" placeholder="Inserisci il nome del componente">
+<input type="text" [(ngModel)]="inputData.prezzoVoce" placeholder="Inserisci il prezzo del componente">
+<input type="text" [(ngModel)]="inputData.numeroVoce" placeholder="Inserisci il numero del componente">
