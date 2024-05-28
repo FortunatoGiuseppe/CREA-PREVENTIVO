@@ -31,3 +31,4 @@ build/
 
 ### VS Code ###
 .vscode/
+/CREA-PREVENTIVO-PF/src/main/angular/node_modules/
