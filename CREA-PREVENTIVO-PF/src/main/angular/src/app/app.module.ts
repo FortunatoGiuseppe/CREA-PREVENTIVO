@@ -2,19 +2,18 @@ import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { HttpClientModule } from '@angular/common/http';
 import { ApiService } from './api.service';
-import { FormsModule } from '@angular/forms';
-
+import { MatToolbarModule } from '@angular/material/toolbar';
 
 @NgModule({
-  declarations: [],
+  declarations: [
+  ],
   imports: [
     BrowserModule,
     HttpClientModule,
-    FormsModule
+    MatToolbarModule
   ],
   providers: [
-    ApiService,
-    HttpClientModule
+    ApiService
   ],
   bootstrap: []
 })

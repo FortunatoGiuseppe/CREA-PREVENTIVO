@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { DraggableButtonComponent } from './draggable-button.component';
+import { BarHeaderComponent } from './bar-header.component';
 
-describe('DraggableButtonComponent', () => {
-  let component: DraggableButtonComponent;
-  let fixture: ComponentFixture<DraggableButtonComponent>;
+describe('BarHeaderComponent', () => {
+  let component: BarHeaderComponent;
+  let fixture: ComponentFixture<BarHeaderComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [DraggableButtonComponent]
+      imports: [BarHeaderComponent]
     })
     .compileComponents();
     
-    fixture = TestBed.createComponent(DraggableButtonComponent);
+    fixture = TestBed.createComponent(BarHeaderComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

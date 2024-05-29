@@ -4,7 +4,20 @@
 <input type="text" [(ngModel)]="inputData.nomeVoce" placeholder="Inserisci il nome del componente">
 <input type="text" [(ngModel)]="inputData.prezzoVoce" placeholder="Inserisci il prezzo del componente">
 <input type="text" [(ngModel)]="inputData.numeroVoce" placeholder="Inserisci il numero del componente"> -->
-<!-- <div>
-  <app-draggable-button></app-draggable-button>
-</div> -->
+
+<!-- 
 <app-material-button></app-material-button>
+<mat-slide-toggle>Toggle me!</mat-slide-toggle>
+
+<mat-form-field>
+  <mat-label>Choose a date</mat-label>
+  <input matInput [matDatepicker]="picker">
+  <mat-hint>MM/DD/YYYY</mat-hint>
+  <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+  <mat-datepicker #picker></mat-datepicker>
+</mat-form-field> -->
+<mat-slide-toggle>Toggle me!</mat-slide-toggle>
+<app-bar-header></app-bar-header>
+<mat-card appDraggable>
+  <mat-card-content>Simple card</mat-card-content>
+</mat-card>

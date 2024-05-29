@@ -29,3 +29,13 @@ section {
   justify-content: center;
   width: 120px;
 }
+
+mat-card {
+  position: absolute; /* Assicurati che il mat-card sia posizionato in modo assoluto per poter essere spostato */
+  cursor: move; /* Cambia il cursore per indicare che l'elemento è spostabile */
+  color: cadetblue;
+}
+
+.example-spacer {
+  flex: 1 1 auto;
+}
