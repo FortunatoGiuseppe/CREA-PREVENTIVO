@@ -2,12 +2,15 @@ import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { PDFDati } from './pdfdati.model';
 import { ApiService } from './api.service';
+import { DraggableButtonModule } from './draggable-button/draggable-button.module';
+import { MaterialButtonModule } from './material-button/material-button.module';
+
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
-  imports: [FormsModule],
+  imports: [FormsModule, DraggableButtonModule, MaterialButtonModule],
   standalone: true
 })
 export class AppComponent {

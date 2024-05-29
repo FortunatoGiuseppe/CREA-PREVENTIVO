@@ -1,6 +1,6 @@
 import {
   getDOM
-} from "./chunk-KLRYJOOJ.js";
+} from "./chunk-2ZJSW6PF.js";
 import {
   ChangeDetectorRef,
   Directive,

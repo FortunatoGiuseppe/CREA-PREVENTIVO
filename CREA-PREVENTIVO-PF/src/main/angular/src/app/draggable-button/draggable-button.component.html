@@ -1,0 +1,8 @@
+<div class="draggable" 
+     [style.left.px]="positionX" 
+     [style.top.px]="positionY" 
+     (mousedown)="onMouseDown($event)" 
+     (document:mouseup)="onMouseUp($event)" 
+     (document:mousemove)="onMouseMove($event)">
+  <button>{{ buttonText }}</button>
+</div>
