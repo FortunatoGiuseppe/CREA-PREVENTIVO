@@ -1,8 +1,8 @@
 version: '3.8'
 services:
-  backend:
+  CREA-PREVENTIVO-RS:
     build:
-      context: ./CREA-PREVENTIVO-RS/src/main/resources
+      context: ./CREA-PREVENTIVO-RS
       dockerfile: Dockerfile
     ports:
       - "8080:8080"
@@ -11,9 +11,9 @@ services:
     networks:
       - app-network
 
-  frontend:
+  CREA-PREVENTIVO-PF:
     build:
-      context: ./CREA-PREVENTIVO-PF/src/main/angular
+      context: ./CREA-PREVENTIVO-PF
       dockerfile: Dockerfile
     ports:
       - "80:80"
