@@ -1,5 +1,5 @@
 # Usa l'immagine di Maven per Java 18 come base
-FROM maven:3.8.4-openjdk-18 AS builder
+FROM maven:latest AS builder
 
 # Imposta il working directory nell'immagine
 WORKDIR /app
