@@ -1,44 +1,48 @@
-# Fase di build del frontend
-FROM node:18 AS frontend-build
+# Stage 1: Build del frontend Angular
+FROM node:latest AS frontend-builder
+
+# Imposta il working directory dell'applicazione frontend
 WORKDIR /app/frontend
+
+# Copia il file package.json e package-lock.json nella directory corrente
 COPY CREA-PREVENTIVO-PF/package*.json ./
+
+# Installa le dipendenze
 RUN npm install
-COPY CREA-PREVENTIVO-PF/ ./
+
+# Copia il resto del codice dell'applicazione
+COPY CREA-PREVENTIVO-PF .
+
+# Compila l'applicazione Angular per produzione
 RUN npm run build --prod
 
-# Fase di build del backend
-FROM maven:3.8.5-openjdk-18 AS backend-build
+
+# Stage 2: Build e esecuzione del backend Spring Boot
+FROM openjdk:18-jdk-slim AS backend-builder
+
+# Imposta il working directory del backend
 WORKDIR /app/backend
-COPY CREA-PREVENTIVO/pom.xml ./pom.xml  # Copia il parent POM nella root della directory backend
-COPY CREA-PREVENTIVO-RS/pom.xml ./CREA-PREVENTIVO-RS/pom.xml
-COPY CREA-PREVENTIVO-PF/pom.xml ./CREA-PREVENTIVO-PF/pom.xml
-COPY CREA-PREVENTIVO-RS/ ./CREA-PREVENTIVO-RS
-COPY CREA-PREVENTIVO-PF/ ./CREA-PREVENTIVO-PF
-RUN mvn clean package -DskipTests
 
-# Crea l'immagine finale
-FROM nginx:alpine
+# Copia il codice sorgente del backend
+COPY CREA-PREVENTIVO-RS /app/backend
 
-# Copia i file del frontend
-COPY --from=frontend-build /app/frontend/dist /usr/share/nginx/html
+# Compila il backend Spring Boot
+RUN ./mvnw package -DskipTests
 
-# Copia il JAR del backend
-COPY --from=backend-build /app/backend/target/*.jar /app/backend.jar
+# Stage finale: Utilizza l'immagine di OpenJDK per eseguire il backend e serve il frontend compilato
+FROM openjdk:18-jdk-slim
 
-# Configura Nginx
-COPY nginx.conf /etc/nginx/nginx.conf
+# Imposta il working directory per il backend
+WORKDIR /app
 
-# Creare un utente non-root con UID tra 10000 e 20000 e un gruppo
-RUN addgroup -g 10001 appgroup && adduser -u 10001 -G appgroup -S appuser
+# Copia il jar compilato del backend dalla stage precedente
+COPY --from=backend-builder /app/backend/target/CREA-PREVENTIVO-RS.jar .
 
-# Modifica le directory per appartenere all'utente non-root
-RUN chown -R appuser:appgroup /app /usr/share/nginx/html
+# Copia i file statici compilati del frontend dalla stage del frontend-builder nella directory di default di Spring Boot
+COPY --from=frontend-builder /app/frontend/dist/CREA-PREVENTIVO-PF /app/src/main/resources/static
 
-# Espone la porta 80 per il frontend
-EXPOSE 80
+# Esponi la porta 8080 per il backend Spring Boot
+EXPOSE 8080
 
-# Utilizzare l'utente non-root per eseguire il container
-USER 10001
-
-# Comando per avviare Nginx e il backend
-CMD ["sh", "-c", "nginx -g 'daemon off;' & java -jar /app/backend.jar"]
+# Comando di avvio del backend Spring Boot
+CMD ["java", "-jar", "CREA-PREVENTIVO-RS.jar"]
