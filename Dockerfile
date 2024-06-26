@@ -17,8 +17,8 @@ RUN npm run build
 FROM openjdk:18-jdk-alpine
 WORKDIR /app
 
-# Creazione di un utente non-root e impostazione dei permessi
-RUN addgroup -S appgroup && adduser -S appuser -G appgroup
+# Creazione di un utente non-root con UID e GID specifici
+RUN addgroup -g 10001 -S appgroup && adduser -u 10001 -S appuser -G appgroup
 
 # Copia dei file dalla fase di build del backend
 COPY --from=backend-build /app/backend/target/backend.jar ./backend.jar
