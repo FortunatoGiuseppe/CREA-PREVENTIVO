@@ -34,8 +34,7 @@ RUN chown -R appuser:appgroup /app /usr/share/nginx/html
 # Espone la porta 80 per il frontend
 EXPOSE 80
 
-# Utilizzare l'utente non-root per eseguire il container
-USER 10001
+USER appuser
 
-# Comando per avviare Nginx e il backend
-CMD ["sh", "-c", "nginx -g 'daemon off;' & java -jar /app/backend.jar"]
+# Avvio dell'applicazione
+CMD ["nginx", "-g", "daemon off;"]
