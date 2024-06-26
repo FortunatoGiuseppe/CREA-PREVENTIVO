@@ -1,28 +1,31 @@
-# Usa l'immagine base di Node.js per compilare l'applicazione Angular
-FROM node:latest AS frontend
+# Usa l'immagine di Node.js 14 come base per il build del frontend
+FROM node:14 AS frontend-builder
 
-# Imposta il working directory dell'applicazione frontend
+# Imposta il working directory per il frontend
 WORKDIR /app
 
-# Copia il file package.json nella directory corrente
-COPY CREA-PREVENTIVO-PF/package.json .
+# Copia i file necessari per il build del frontend
+COPY CREA-PREVENTIVO-PF/package.json CREA-PREVENTIVO-PF/package-lock.json ./
 
-# Installa le dipendenze
+# Esegui l'installazione delle dipendenze
 RUN npm install
 
-# Copia il resto del codice dell'applicazione
+# Copia tutto il codice frontend nella directory corrente
 COPY CREA-PREVENTIVO-PF .
 
-# Compila l'applicazione
+# Esegui il build del frontend Angular per produzione
 RUN npm run build --prod
 
-# Stage finale: usa l'immagine Nginx per servire l'applicazione compilata
-FROM nginx:latest
+# Stage finale: Crea l'immagine Docker finale con il frontend Angular
+FROM nginx:alpine
 
-# Copia i file statici compilati dallo stage precedente nella directory di default di Nginx
-COPY --from=frontend /app/dist/CREA-PREVENTIVO-PF /usr/share/nginx/html
+# Copia i file statici del frontend compilato nella directory di default di Nginx
+COPY --from=frontend-builder /app/dist/CREA-PREVENTIVO-PF /usr/share/nginx/html
 
-# Esponi la porta 80 per il server Nginx
+# Copia la configurazione di Nginx
+COPY CREA-PREVENTIVO-PF/nginx.conf /etc/nginx/nginx.conf
+
+# Espone la porta 80 per il web server Nginx
 EXPOSE 80
 
-# Non è necessario specificare un CMD esplicito, l'immagine Nginx ha un CMD di default per avviare il server
+# Il comando di avvio di Nginx è gestito dall'immagine di base di Nginx automaticamente

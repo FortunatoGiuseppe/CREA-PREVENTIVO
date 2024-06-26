@@ -1,14 +1,31 @@
-# Usa l'immagine base di OpenJDK per Java 18
-FROM openjdk:18-jdk-slim AS backend
+# Usa l'immagine di Maven per Java 18 come base
+FROM maven:3.8.4-openjdk-18-slim AS builder
 
-# Copia il jar del backend nella directory /app
-COPY CREA-PREVENTIVO-RS/target/CREA-PREVENTIVO-RS-0.0.1-SNAPSHOT.jar /app/CREA-PREVENTIVO-RS.jar
+# Imposta il working directory nell'immagine
+WORKDIR /app
 
-# Porta su cui il backend sarà esposto (assumendo che il backend ascolti sulla porta 8080)
+# Copia il file pom.xml nella directory corrente
+COPY pom.xml .
+
+# Esegui l'installazione delle dipendenze di Maven
+RUN mvn dependency:go-offline
+
+# Copia tutto il codice sorgente nella directory corrente
+COPY src ./src
+
+# Esegui il build dell'applicazione usando Maven
+RUN mvn package -DskipTests
+
+# Stage finale: Crea l'immagine Docker finale con l'applicazione Java
+FROM openjdk:18-jdk-slim
+
+# Copia il file JAR dell'applicazione Java dal primo stage
+COPY --from=builder /app/target/CREA-PREVENTIVO-RS-0.0.1-SNAPSHOT.jar /app/app.jar
+
+# Espone la porta su cui l'applicazione sarà in ascolto (se necessario)
 EXPOSE 8080
 
-# USER
-USER 10014
+# Comando di avvio dell'applicazione
+CMD ["java", "-jar", "/app/app.jar"]
 
-# Comando di avvio del backend
-CMD ["java", "-jar", "/app/CREA-PREVENTIVO-RS.jar"]
+USER 10001
