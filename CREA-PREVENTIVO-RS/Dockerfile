@@ -8,13 +8,13 @@ WORKDIR /app
 COPY pom.xml .
 
 # Esegui l'installazione delle dipendenze di Maven e installa il POM parent nel repository locale
-RUN mvn install
+RUN mvn install -DskipTests=true -Dmaven.javadoc.skip=true
 
-# Copia tutto il codice sorgente nella directory corrente
+# Copia tutto il codice sorgente dalla directory 'src' nella directory corrente dell'immagine
 COPY src ./src
 
 # Esegui il build dell'applicazione usando Maven
-RUN mvn package -DskipTests
+RUN mvn package -DskipTests=true -Dmaven.javadoc.skip=true
 
 # Stage finale: Crea l'immagine Docker finale con l'applicazione Java
 FROM openjdk:18-jdk-slim
@@ -26,6 +26,7 @@ COPY --from=builder /app/target/CREA-PREVENTIVO-RS-0.0.1-SNAPSHOT.jar /app/app.j
 EXPOSE 8080
 
 # Comando di avvio dell'applicazione
+CMD ["java", "-jar", "/app/app.jar"]
 CMD ["java", "-jar", "/app/app.jar"]
 
 USER 10001
