@@ -10,4 +10,8 @@ FROM openjdk:18-jdk-alpine
 WORKDIR /app
 COPY --from=build /app/target/*.jar app.jar
 EXPOSE 8080
+
+# Imposta un utente non-root per eseguire l'app (esempio: user 10014)
+USER 10014
+
 ENTRYPOINT ["java", "-jar", "app.jar"]
