@@ -7,8 +7,8 @@ WORKDIR /app
 # Copia il file pom.xml nella directory corrente
 COPY pom.xml .
 
-# Esegui l'installazione delle dipendenze di Maven
-RUN mvn dependency:go-offline
+# Esegui l'installazione delle dipendenze di Maven e installa il POM parent nel repository locale
+RUN mvn clean install
 
 # Copia tutto il codice sorgente nella directory corrente
 COPY src ./src
