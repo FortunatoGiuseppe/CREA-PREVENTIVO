@@ -18,7 +18,7 @@ RUN npm run build --prod
 
 
 # Stage 2: Build e esecuzione del backend Spring Boot
-FROM openjdk:18-jdk-slim AS backend-builder
+FROM maven:3.8.5-openjdk-18 AS backend-builder
 
 # Crea un utente e un gruppo con ID nell'intervallo 10000-20000
 RUN groupadd -r -g 15000 spring && useradd -r -u 15001 -g spring spring
@@ -40,6 +40,7 @@ RUN mvn -N io.takari:maven:wrapper
 
 # Esegui il packaging del backend Spring Boot
 RUN ./mvnw package -DskipTests
+
 
 # Stage finale: Utilizza l'immagine di OpenJDK per eseguire il backend e serve il frontend compilato
 FROM openjdk:18-jdk-slim
