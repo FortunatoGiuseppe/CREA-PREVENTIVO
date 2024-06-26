@@ -7,5 +7,8 @@ COPY CREA-PREVENTIVO-RS/target/CREA-PREVENTIVO-RS.jar /app/CREA-PREVENTIVO-RS.ja
 # Porta su cui il backend sarà esposto (assumendo che il backend ascolti sulla porta 8080)
 EXPOSE 8080
 
+# USER
+USER 10014
+
 # Comando di avvio del backend
 CMD ["java", "-jar", "/app/CREA-PREVENTIVO-RS.jar"]
