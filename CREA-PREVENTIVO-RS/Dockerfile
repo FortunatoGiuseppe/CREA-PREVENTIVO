@@ -27,6 +27,5 @@ EXPOSE 8080
 
 # Comando di avvio dell'applicazione
 CMD ["java", "-jar", "/app/app.jar"]
-CMD ["java", "-jar", "/app/app.jar"]
 
 USER 10001
