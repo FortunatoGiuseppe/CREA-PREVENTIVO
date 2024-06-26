@@ -54,8 +54,8 @@ COPY --from=frontend-builder /app/frontend/dist/CREA-PREVENTIVO-PF /app/src/main
 # Esponi la porta 8080 per il backend Spring Boot
 EXPOSE 8080
 
-# Imposta l'utente non-root per l'esecuzione del container
-USER spring
+# Utilizzare l'utente non-root per eseguire il container
+USER 10001
 
 # Comando di avvio del backend Spring Boot
 CMD ["java", "-jar", "CREA-PREVENTIVO-RS.jar"]
