@@ -9,8 +9,10 @@ RUN npm run build --prod
 # Fase di build del backend
 FROM maven:3.8.5-openjdk-18 AS backend-build
 WORKDIR /app/backend
-COPY pom.xml .
-COPY CREA-PREVENTIVO-RS/ ./src
+COPY CREA-PREVENTIVO-RS/pom.xml .
+COPY CREA-PREVENTIVO-PF/pom.xml .
+COPY CREA-PREVENTIVO-RS/ ./CREA-PREVENTIVO-RS
+COPY CREA-PREVENTIVO-PF/ ./CREA-PREVENTIVO-PF
 RUN mvn clean package -DskipTests
 
 # Crea l'immagine finale
