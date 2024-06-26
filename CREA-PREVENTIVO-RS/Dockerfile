@@ -8,7 +8,7 @@ WORKDIR /app
 COPY pom.xml .
 
 # Esegui l'installazione delle dipendenze di Maven e installa il POM parent nel repository locale
-RUN mvn clean install
+RUN mvn install
 
 # Copia tutto il codice sorgente nella directory corrente
 COPY src ./src
