@@ -20,8 +20,8 @@ RUN npm run build --prod
 # Stage 2: Build e esecuzione del backend Spring Boot
 FROM openjdk:18-jdk-slim AS backend-builder
 
-# Imposta un utente non-root per le operazioni successive
-RUN groupadd -r spring && useradd -r -g spring spring
+# Crea un utente e un gruppo con ID nell'intervallo 10000-20000
+RUN groupadd -r -g 15000 spring && useradd -r -u 15001 -g spring spring
 
 # Imposta il working directory del backend
 WORKDIR /app/backend
@@ -39,12 +39,14 @@ RUN ./mvnw package -DskipTests
 # Stage finale: Utilizza l'immagine di OpenJDK per eseguire il backend e serve il frontend compilato
 FROM openjdk:18-jdk-slim
 
-# Copia il jar compilato del backend dalla stage precedente
-COPY --from=backend-builder /app/backend/target/CREA-PREVENTIVO-RS.jar /app/CREA-PREVENTIVO-RS.jar
+# Crea un utente e un gruppo con ID nell'intervallo 10000-20000
+RUN groupadd -r -g 15000 spring && useradd -r -u 15001 -g spring spring
 
-# Imposta un utente non-root per l'esecuzione del container
-RUN groupadd -r spring && useradd -r -g spring spring
-USER spring
+# Imposta il working directory per il backend
+WORKDIR /app
+
+# Copia il jar compilato del backend dalla stage precedente
+COPY --from=backend-builder /app/backend/target/CREA-PREVENTIVO-RS.jar .
 
 # Copia i file statici compilati del frontend dalla stage del frontend-builder nella directory di default di Spring Boot
 COPY --from=frontend-builder /app/frontend/dist/CREA-PREVENTIVO-PF /app/src/main/resources/static
@@ -52,5 +54,8 @@ COPY --from=frontend-builder /app/frontend/dist/CREA-PREVENTIVO-PF /app/src/main
 # Esponi la porta 8080 per il backend Spring Boot
 EXPOSE 8080
 
+# Imposta l'utente non-root per l'esecuzione del container
+USER spring
+
 # Comando di avvio del backend Spring Boot
-CMD ["java", "-jar", "/app/CREA-PREVENTIVO-RS.jar"]
+CMD ["java", "-jar", "CREA-PREVENTIVO-RS.jar"]
