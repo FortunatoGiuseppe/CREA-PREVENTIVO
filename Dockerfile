@@ -1,39 +1,41 @@
+# Fase di build del frontend
+FROM node:18 AS frontend-build
+WORKDIR /app/frontend
+COPY CREA-PREVENTIVO-PF/package*.json ./
+RUN npm install
+COPY CREA-PREVENTIVO-PF/ ./
+RUN npm run build --prod
+
 # Fase di build del backend
 FROM maven:3.8.5-openjdk-18 AS backend-build
 WORKDIR /app/backend
 COPY pom.xml .
-COPY CREA-PREVENTIVO-RS/ ./CREA-PREVENTIVO-RS
-COPY CREA-PREVENTIVO-PF/ ./CREA-PREVENTIVO-PF
+COPY CREA-PREVENTIVO-RS/ ./src
 RUN mvn clean package -DskipTests
 
-# Fase di build del frontend
-FROM node:18 AS frontend-build
-WORKDIR /app/frontend
-COPY CREA-PREVENTIVO-PF/ .
-RUN npm install
-RUN npm run build
+# Crea l'immagine finale
+FROM nginx:alpine
 
-# Fase finale
-FROM openjdk:18-jdk-alpine
-WORKDIR /app
+# Copia i file del frontend
+COPY --from=frontend-build /app/frontend/dist /usr/share/nginx/html
 
-# Creazione di un utente non-root con UID e GID specifici
-RUN addgroup -g 10001 -S appgroup && adduser -u 10001 -S appuser -G appgroup
+# Copia il JAR del backend
+COPY --from=backend-build /app/backend/target/*.jar /app/backend.jar
 
-# Copia dei file dalla fase di build del backend
-COPY --from=backend-build /app/backend/target/backend.jar ./backend.jar
+# Configura Nginx
+COPY nginx.conf /etc/nginx/nginx.conf
 
-# Copia dei file dalla fase di build del frontend
-COPY --from=frontend-build /app/frontend/build ./frontend
+# Creare un utente non-root con UID tra 10000 e 20000 e un gruppo
+RUN addgroup -g 10001 appgroup && adduser -u 10001 -G appgroup -S appuser
 
-# Impostazione dei permessi per l'utente non-root
-RUN chown -R appuser:appgroup /app
+# Modifica le directory per appartenere all'utente non-root
+RUN chown -R appuser:appgroup /app /usr/share/nginx/html
 
-# Passaggio all'utente non-root
-USER appuser
+# Espone la porta 80 per il frontend
+EXPOSE 80
 
-# Esporre la porta 8080
-EXPOSE 8080
+# Utilizzare l'utente non-root per eseguire il container
+USER 10001
 
-# Comando di avvio dell'applicazione
-CMD ["java", "-jar", "backend.jar"]
+# Comando per avviare Nginx e il backend
+CMD ["sh", "-c", "nginx -g 'daemon off;' & java -jar /app/backend.jar"]
