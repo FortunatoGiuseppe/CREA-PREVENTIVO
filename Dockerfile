@@ -13,18 +13,22 @@ COPY pom.xml .
 COPY CREA-PREVENTIVO-RS/ ./src
 RUN mvn clean package -DskipTests
 
-# Crea l'immagine finale con Nginx per il frontend e il JAR del backend
-FROM nginx:alpine AS final
-# Copia i file del frontend
-COPY --from=frontend-build /app/frontend/dist /usr/share/nginx/html
+# Crea l'immagine finale
+FROM openjdk:18-jdk-alpine
 # Copia il JAR del backend
 COPY --from=backend-build /app/backend/target/*.jar /app/backend.jar
+# Copia i file del frontend
+COPY --from=frontend-build /app/frontend/dist /usr/share/nginx/html
 
-# Configura Nginx
-COPY nginx.conf /etc/nginx/nginx.conf
+# Creare un utente non-root e un gruppo
+RUN addgroup -S appgroup && adduser -S appuser -G appgroup
+RUN chown -R appuser:appgroup /app /usr/share/nginx/html
 
-# Espone la porta 80 per il frontend e la porta 8080 per il backend
-EXPOSE 80 8080
+# Espone la porta 8080 per il backend
+EXPOSE 8080
 
-# Comando per avviare entrambi i server
-CMD ["sh", "-c", "nginx -g 'daemon off;' & java -jar /app/backend.jar"]
+# Utilizzare l'utente non-root per eseguire il container
+USER appuser
+
+# Comando per avviare il backend
+ENTRYPOINT ["sh", "-c", "java -jar /app/backend.jar"]
