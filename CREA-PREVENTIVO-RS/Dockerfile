@@ -11,4 +11,4 @@ EXPOSE 8080
 USER 10014
 
 # Comando di avvio del backend
-CMD ["java", "-jar", "/app/CREA-PREVENTIVO-RS.jar"]
+CMD ["java", "-jar", "/app/CREA-PREVENTIVO-RS-0.0.1-SNAPSHOT.jar"]
