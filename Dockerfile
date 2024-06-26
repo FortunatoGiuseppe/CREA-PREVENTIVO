@@ -9,9 +9,9 @@ RUN npm run build --prod
 # Fase di build del backend
 FROM maven:3.8.5-openjdk-18 AS backend-build
 WORKDIR /app/backend
-COPY CREA-PREVENTIVO/pom.xml .  # Copia il parent POM
-COPY CREA-PREVENTIVO-RS/pom.xml ./CREA-PREVENTIVO-RS
-COPY CREA-PREVENTIVO-PF/pom.xml ./CREA-PREVENTIVO-PF
+COPY CREA-PREVENTIVO/pom.xml ./pom.xml  # Copia il parent POM nella root della directory backend
+COPY CREA-PREVENTIVO-RS/pom.xml ./CREA-PREVENTIVO-RS/pom.xml
+COPY CREA-PREVENTIVO-PF/pom.xml ./CREA-PREVENTIVO-PF/pom.xml
 COPY CREA-PREVENTIVO-RS/ ./CREA-PREVENTIVO-RS
 COPY CREA-PREVENTIVO-PF/ ./CREA-PREVENTIVO-PF
 RUN mvn clean package -DskipTests
