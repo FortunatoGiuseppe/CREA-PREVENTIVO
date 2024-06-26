@@ -33,6 +33,11 @@ COPY CREA-PREVENTIVO-RS /app/backend
 RUN chown -R spring:spring /app/backend
 USER spring
 
+# Installa Maven Wrapper se non è già presente
+COPY mvnw ./
+COPY .mvn ./.mvn
+RUN mvn -N io.takari:maven:wrapper
+
 # Esegui il packaging del backend Spring Boot
 RUN ./mvnw package -DskipTests
 
